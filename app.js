@@ -14,6 +14,8 @@ const render = require("./lib/htmlRenderer");
 // Write code to use inquirer to gather information about the development team members,
 // and to create objects for each team member (using the correct classes as blueprints!)
 
+
+
 // After the user has input all employees desired, call the `render` function (required
 // above) and pass in an array containing all employee objects; the `render` function will
 // generate and return a block of HTML including templated divs for each employee!
@@ -33,3 +35,93 @@ const render = require("./lib/htmlRenderer");
 // for further information. Be sure to test out each class and verify it generates an
 // object with the correct structure and methods. This structure will be crucial in order
 // for the provided `render` function to work! ```
+
+
+const continueQuestions = {
+    type: 'input',
+    name: 'continue',
+    message: "Do you wish to add another employee?",
+    default: 'yes'
+}
+
+const questionBank = [
+    {
+        type: 'input',
+        name: 'name',
+        message: 'What is the employee\'s name?'
+    },
+    {
+        type: 'input',
+        name: 'id',
+        message: 'What is the employee\'s id?'
+    },
+    {
+        type: 'input',
+        name: 'email',
+        message: 'What is the employee\'s email?'
+    },
+    {
+        type: 'list',
+        name: 'role',
+        message: 'What is the employee\'s role?',
+        choices: ['Intern', 'Engineer', 'Manager']
+    },
+];
+
+const followUpQuestions = [
+    {
+        type: 'input',
+        name: 'info',
+        message: 'What is the intern\'s school?'
+    },
+    {
+        type: 'input',
+        name: 'info',
+        message: 'What is the engineer\'s github?'
+    },
+    {
+        type: 'input',
+        name: 'info',
+        message: 'What is the manager\'s office number?'
+    }
+];
+
+const employees = [];
+
+    async function askQuestions() {
+        let continueAsking = true;
+        while(continueAsking){
+            let answers = await inquirer.prompt(questionBank);
+            switch (answers.role) {
+                case 'Intern':
+                    {
+                        const followUp = await inquirer.prompt(followUpQuestions[0]);
+                        var intern = new Intern (answers.name, answers.id, answers.email, answers.role, followUp.info);
+                        employees.push(intern);
+                    }
+                    break;
+                case 'Engineer': 
+                    {
+                        const followUp = await inquirer.prompt(followUpQuestions[1]);
+                        var engineer = new Engineer (answers.name, answers.id, answers.email, answers.role, followUp.info);
+                        employees.push(engineer);
+                        // employees.push(user);
+                    }
+                    break;
+                case 'Manager':
+                    {
+                        const followUp = await inquirer.prompt(followUpQuestions[2]);
+                        var manager = new Manager (answers.name, answers.id, answers.email, answers.role, followUp.info);
+                        employees.push(manager);
+                        // employees.push(user);
+                }
+                break;
+        }
+        let continueAnswer = await inquirer.prompt(continueQuestions);
+        continueAsking = continueAnswer == 'yes';
+    }
+    console.log(employees);
+}
+
+askQuestions();
+
