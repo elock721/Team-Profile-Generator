@@ -36,7 +36,7 @@ const render = require("./lib/htmlRenderer");
 // object with the correct structure and methods. This structure will be crucial in order
 // for the provided `render` function to work! ```
 
-
+// question that allows user to continue adding employees
 const continueQuestions = {
     type: 'input',
     name: 'continue',
@@ -44,6 +44,7 @@ const continueQuestions = {
     default: 'yes'
 }
 
+// first set of question necessary for all employees
 const questionBank = [
     {
         type: 'input',
@@ -68,6 +69,7 @@ const questionBank = [
     },
 ];
 
+// follow up question for specific types of employees
 const followUpQuestions = [
     {
         type: 'input',
@@ -86,12 +88,16 @@ const followUpQuestions = [
     }
 ];
 
+// empty array where entered employee data is pushed to
 const employees = [];
 
+    // function that produces the questions 
     async function askQuestions() {
         let continueAsking = true;
         while(continueAsking){
+            // prompts inital questions for all employees
             let answers = await inquirer.prompt(questionBank);
+            // prompts followup questions based on selected employee role
             switch (answers.role) {
                 case 'Intern':
                     {
@@ -105,7 +111,6 @@ const employees = [];
                         const followUp = await inquirer.prompt(followUpQuestions[1]);
                         var engineer = new Engineer (answers.name, answers.id, answers.email, answers.role, followUp.info);
                         employees.push(engineer);
-                        // employees.push(user);
                     }
                     break;
                 case 'Manager':
@@ -113,15 +118,24 @@ const employees = [];
                         const followUp = await inquirer.prompt(followUpQuestions[2]);
                         var manager = new Manager (answers.name, answers.id, answers.email, answers.role, followUp.info);
                         employees.push(manager);
-                        // employees.push(user);
                 }
                 break;
         }
+        // asks user if they would like to keep adding employees
         let continueAnswer = await inquirer.prompt(continueQuestions);
         continueAsking = continueAnswer == 'yes';
     }
     console.log(employees);
 }
 
+// calling of the askQuestions function
 askQuestions();
 
+
+// calling to render the HTML file 
+writeOutput =() => {
+    if(!fs.existsSync(OUTPUT_DIR)) {
+        fs.mkdirSync(OUTPUT_DIR)
+    }
+    fs.writeFileSync(outputPath, render(employees), "utf-8")
+}
