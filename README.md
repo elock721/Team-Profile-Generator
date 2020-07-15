@@ -12,7 +12,7 @@ When the user is done entering all necessary employees, all the entered data wil
 
 ---------------------------------------------
 
-# Psuedo Code
+# Pseudo Code
 
 The user will first open up the terminal at the app.js folder and run "node app.js"
 
