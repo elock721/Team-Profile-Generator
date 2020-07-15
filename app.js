@@ -10,33 +10,6 @@ const outputPath = path.join(OUTPUT_DIR, "team.html");
 
 const render = require("./lib/htmlRenderer");
 
-
-// Write code to use inquirer to gather information about the development team members,
-// and to create objects for each team member (using the correct classes as blueprints!)
-
-
-
-// After the user has input all employees desired, call the `render` function (required
-// above) and pass in an array containing all employee objects; the `render` function will
-// generate and return a block of HTML including templated divs for each employee!
-
-// After you have your html, you're now ready to create an HTML file using the HTML
-// returned from the `render` function. Now write it to a file named `team.html` in the
-// `output` folder. You can use the variable `outputPath` above target this location.
-// Hint: you may need to check if the `output` folder exists and create it if it
-// does not.
-
-// HINT: each employee type (manager, engineer, or intern) has slightly different
-// information; write your code to ask different questions via inquirer depending on
-// employee type.
-
-// HINT: make sure to build out your classes first! Remember that your Manager, Engineer,
-// and Intern classes should all extend from a class named Employee; see the directions
-// for further information. Be sure to test out each class and verify it generates an
-// object with the correct structure and methods. This structure will be crucial in order
-// for the provided `render` function to work! ```
-
-// question that allows user to continue adding employees
 const continueQuestions = {
     type: 'input',
     name: 'continue',
@@ -91,6 +64,16 @@ const followUpQuestions = [
 // empty array where entered employee data is pushed to
 const employees = [];
 
+
+// function to render the HTML file 
+writeOutput =() => {
+    if(!fs.existsSync(OUTPUT_DIR)) {
+        fs.mkdirSync(OUTPUT_DIR)
+    }
+    fs.writeFileSync(outputPath, render(employees), "utf-8")
+}
+
+
     // function that produces the questions 
     async function askQuestions() {
         let continueAsking = true;
@@ -123,19 +106,14 @@ const employees = [];
         }
         // asks user if they would like to keep adding employees
         let continueAnswer = await inquirer.prompt(continueQuestions);
-        continueAsking = continueAnswer == 'yes';
+        continueAsking = continueAnswer.continue.toLowerCase() === 'yes';
     }
-    console.log(employees);
+    // rendering to html
+    writeOutput();
 }
 
 // calling of the askQuestions function
 askQuestions();
 
 
-// calling to render the HTML file 
-writeOutput =() => {
-    if(!fs.existsSync(OUTPUT_DIR)) {
-        fs.mkdirSync(OUTPUT_DIR)
-    }
-    fs.writeFileSync(outputPath, render(employees), "utf-8")
-}
+
